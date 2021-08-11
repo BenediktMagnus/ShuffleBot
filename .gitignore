@@ -1,0 +1,20 @@
+# No node_modules:
+node_modules/
+
+# No package-lock.json (package manager specific):
+package-lock.json
+
+# No browser specific configs:
+.vscode
+*.code-workspace
+.idea
+
+# Ignore Mac files:
+.DS_Store
+*.DS_Store
+
+# No builds:
+bin/**/*
+
+# Coverage directory used by tools like istanbul:
+coverage
