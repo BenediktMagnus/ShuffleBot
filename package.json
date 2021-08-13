@@ -4,6 +4,10 @@
     "description": "A networking bot for Discord that shuffles and distributes people into voice corners.",
     "author": "Benedikt Magnus",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BenediktMagnus/ShuffleBot.git"
+    },
     "keywords": [
         "bot",
         "discord"
