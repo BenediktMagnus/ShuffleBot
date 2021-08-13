@@ -1,16 +1,20 @@
 import * as Discord from 'discord.js';
 import { Command } from './commands/command';
-import { promises as fs } from 'fs';
+import { Config } from './config';
 import { REST as DiscordRestApi } from '@discordjs/rest';
 import { Routes as DiscordRoutes } from 'discord-api-types/v9';
+import { promises as fs } from 'fs';
 
 export class ShuffleBot
 {
+    private config: Config;
     private discordClient: Discord.Client;
     private commands: Discord.Collection<string, Command>;
 
-    constructor ()
+    constructor (config: Config)
     {
+        this.config = config;
+
         this.discordClient = new Discord.Client(
             {
                 intents: [Discord.Intents.FLAGS.GUILDS && Discord.Intents.FLAGS.GUILD_MESSAGES]
@@ -33,7 +37,7 @@ export class ShuffleBot
     {
         await this.loadCommands();
 
-        const loginName = await this.discordClient.login('TODO: Token');
+        const loginName = await this.discordClient.login(this.config.token);
 
         await this.registerCommands();
 
@@ -61,7 +65,7 @@ export class ShuffleBot
             }
         );
 
-        discordRestApi.setToken('TODO: Token');
+        discordRestApi.setToken(this.config.token);
 
         const guilds = this.discordClient.guilds.cache.values();
 
@@ -69,7 +73,7 @@ export class ShuffleBot
         {
             await discordRestApi.put(
                 DiscordRoutes.applicationGuildCommands(
-                    'TODO: ClientId', guild.id
+                    this.config.clientId, guild.id
                 ),
                 {
                     body: this.commands.values()
