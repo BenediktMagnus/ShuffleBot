@@ -22,6 +22,8 @@ export class ShuffleBot
             }
         );
 
+        this.discordClient.on('interactionCreate', this.onInteraction.bind(this));
+
         this.commands = new Discord.Collection();
     }
 
@@ -50,5 +52,31 @@ export class ShuffleBot
     public terminate (): void
     {
         this.discordClient.destroy();
+    }
+
+    private async onInteraction (interaction: Discord.Interaction): Promise<void>
+    {
+        if (!interaction.isCommand() || !this.commands.has(interaction.commandName))
+        {
+            return;
+        }
+
+        try
+        {
+            const command = this.commands.get(interaction.commandName);
+
+            if (command === undefined)
+            {
+                console.error(`Could not find command "${interaction.commandName}".`);
+
+                return;
+            }
+
+            await command.execute(interaction);
+        }
+        catch (error)
+        {
+            console.error(error);
+        }
     }
 }
