@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
 import { Command } from './commands/command';
 import { promises as fs } from 'fs';
+import { REST as DiscordRestApi } from '@discordjs/rest';
+import { Routes as DiscordRoutes } from 'discord-api-types/v9';
 
 export class ShuffleBot
 {
@@ -33,6 +35,8 @@ export class ShuffleBot
 
         const loginName = await this.discordClient.login('TODO: Token');
 
+        await this.registerCommands();
+
         return loginName;
     }
 
@@ -46,6 +50,31 @@ export class ShuffleBot
             const command = await import(`./commands/${commandFile}`) as Command;
 
             this.commands.set(command.data.name, command);
+        }
+    }
+
+    private async registerCommands (): Promise<void>
+    {
+        const discordRestApi = new DiscordRestApi(
+            {
+                version: '9'
+            }
+        );
+
+        discordRestApi.setToken('TODO: Token');
+
+        const guilds = this.discordClient.guilds.cache.values();
+
+        for (const guild of guilds)
+        {
+            await discordRestApi.put(
+                DiscordRoutes.applicationGuildCommands(
+                    'TODO: ClientId', guild.id
+                ),
+                {
+                    body: this.commands.values()
+                }
+            );
         }
     }
 
