@@ -11,6 +11,9 @@
         "node": ">=14.15.0"
     },
     "dependencies": {
+        "discord.js": "13.1.0",
+        "@discordjs/builders": "0.5.0",
+        "@discordjs/rest": "0.1.0-canary.0"
     },
     "devDependencies": {
         "@types/node": "14.17.9",
