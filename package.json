@@ -1,8 +1,9 @@
 {
     "name": "shuffle-bot",
+    "version": "0.1.0-dev",
     "description": "A networking bot for Discord that shuffles and distributes people into voice corners.",
     "author": "Benedikt Magnus",
-    "version": "0.1.0-dev",
+    "license": "MIT",
     "keywords": [
         "bot",
         "discord"
@@ -24,6 +25,7 @@
     },
     "files": [
         "bin",
+        "LICENSE",
         "README.md"
     ],
     "main": "bin/main.js",
