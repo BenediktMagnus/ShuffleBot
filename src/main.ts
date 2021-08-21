@@ -1,7 +1,7 @@
 import { Config } from "./config";
 import { ShuffleBot } from "./shuffleBot";
 
-const configFilePath = './config/bot.json';
+const configFilePath = './data/config.json';
 
 class Main
 {
