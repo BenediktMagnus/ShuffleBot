@@ -44,6 +44,9 @@ export class ShuffleBot
         return loginName;
     }
 
+    /**
+     * Loads all commands from the command directory.
+     */
     private async loadCommands (): Promise<void>
     {
         let commandFiles = await fs.readdir('./commands');
@@ -57,6 +60,9 @@ export class ShuffleBot
         }
     }
 
+    /**
+     * Registers all commands at the Discord API.
+     */
     private async registerCommands (): Promise<void>
     {
         const discordRestApi = new DiscordRestApi(
@@ -87,6 +93,10 @@ export class ShuffleBot
         this.discordClient.destroy();
     }
 
+    /**
+     * Called wheren there is a new interaction from Discord.
+     * @param interaction The interaction created by the Discord library.
+     */
     private async onInteraction (interaction: Discord.Interaction): Promise<void>
     {
         if (!interaction.isCommand() || !this.commands.has(interaction.commandName))
