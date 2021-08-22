@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { Command } from './command';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-export class PingCommand implements Command
+export default class PingCommand implements Command
 {
     public data: SlashCommandBuilder;
 

@@ -1,9 +1,12 @@
 import * as Discord from 'discord.js';
+import * as Path from 'path';
 import { Command } from './commands/command';
+import type { CommandConstructor } from './types/commandConstructor';
 import { Config } from './config';
 import { REST as DiscordRestApi } from '@discordjs/rest';
 import { Routes as DiscordRoutes } from 'discord-api-types/v9';
 import { promises as fs } from 'fs';
+import type { ModuleWithDefaultExport } from './types/moduleWithDefaultExport';
 
 export class ShuffleBot
 {
@@ -49,12 +52,20 @@ export class ShuffleBot
      */
     private async loadCommands (): Promise<void>
     {
-        let commandFiles = await fs.readdir('./commands');
+        const directoryPath = Path.join(__dirname, 'commands');
+
+        let commandFiles = await fs.readdir(directoryPath);
         commandFiles = commandFiles.filter(file => file.endsWith('Command.js'));
 
         for (const commandFile of commandFiles)
         {
-            const command = await import(`./commands/${commandFile}`) as Command;
+            const commandFilePath = Path.join(directoryPath, commandFile);
+
+            const commandModule = await import(commandFilePath) as ModuleWithDefaultExport;
+
+            const commandClass = commandModule.default as CommandConstructor;
+
+            const command = new commandClass();
 
             this.commands.set(command.data.name, command);
         }
