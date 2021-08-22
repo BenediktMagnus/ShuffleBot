@@ -40,7 +40,14 @@ export class ShuffleBot
     {
         await this.loadCommands();
 
-        const loginName = await this.discordClient.login(this.config.token);
+        await this.discordClient.login(this.config.token);
+
+        const loginName = this.discordClient.user?.tag;
+
+        if (loginName === undefined)
+        {
+            throw new Error('Failed to login to Discord, no user tag found.');
+        }
 
         await this.registerCommands();
 
