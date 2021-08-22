@@ -86,6 +86,8 @@ export class ShuffleBot
 
         const guilds = this.discordClient.guilds.cache.values();
 
+        const commandsAsJsonArray = this.commands.map(command => command.data.toJSON());
+
         for (const guild of guilds)
         {
             await discordRestApi.put(
@@ -93,7 +95,7 @@ export class ShuffleBot
                     this.config.clientId, guild.id
                 ),
                 {
-                    body: this.commands.values()
+                    body: commandsAsJsonArray
                 }
             );
         }
