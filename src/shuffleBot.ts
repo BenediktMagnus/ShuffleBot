@@ -95,14 +95,32 @@ export class ShuffleBot
 
         const commandsAsJsonArray = this.commands.map(command => command.data.toJSON());
 
+        // We do not register global commands but instead register all commands in all guilds.
+        // This prevents the one hour cache restriction of the Discord API.
         for (const guild of guilds)
         {
-            await discordRestApi.put(
+            const result = await discordRestApi.put(
                 DiscordRoutes.applicationGuildCommands(
                     this.config.clientId, guild.id
                 ),
                 {
                     body: commandsAsJsonArray
+                }
+            ) as { id: Discord.Snowflake}[];
+
+            const commandId = result[0].id;
+
+            const command = await guild.commands.fetch(commandId);
+
+            await command.permissions.add(
+                {
+                    permissions: [
+                        {
+                            id: this.config.controlGroupId,
+                            type: 'ROLE',
+                            permission: true,
+                        }
+                    ]
                 }
             );
         }

@@ -11,6 +11,7 @@ export default class PingCommand implements Command
         this.data = new SlashCommandBuilder();
         this.data.setName('ping');
         this.data.setDescription('Replies with Pong!');
+        this.data.setDefaultPermission(false);
     }
 
     public async execute (interaction: Discord.CommandInteraction): Promise<void>
