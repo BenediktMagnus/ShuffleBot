@@ -26,11 +26,17 @@ export class Config
 
         const configJson = JSON.parse(content) as ConfigJson;
 
-        if ((configJson.name === undefined)
-            || (configJson.clientId === undefined)
-            || (configJson.token === undefined))
+        if (configJson.name === undefined)
         {
-            throw new Error('Invalid config file');
+            throw new Error('Config file is missing the name field.');
+        }
+        if (configJson.clientId === undefined)
+        {
+            throw new Error('Config file is missing the clientId field.');
+        }
+        if (configJson.token === undefined)
+        {
+            throw new Error('Config file is missing the token field.');
         }
 
         this.name = configJson.name;
