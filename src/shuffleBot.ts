@@ -108,21 +108,25 @@ export class ShuffleBot
                 }
             ) as { id: Discord.Snowflake}[];
 
-            const commandId = result[0].id;
+            // Set permissions (only control group has access) for all commands:
+            for (const resultEntry of result)
+            {
+                const commandId = resultEntry.id;
 
-            const command = await guild.commands.fetch(commandId);
+                const command = await guild.commands.fetch(commandId);
 
-            await command.permissions.add(
-                {
-                    permissions: [
-                        {
-                            id: this.config.controlGroupId,
-                            type: 'ROLE',
-                            permission: true,
-                        }
-                    ]
-                }
-            );
+                await command.permissions.add(
+                    {
+                        permissions: [
+                            {
+                                id: this.config.controlGroupId,
+                                type: 'ROLE',
+                                permission: true,
+                            }
+                        ]
+                    }
+                );
+            }
         }
     }
 
