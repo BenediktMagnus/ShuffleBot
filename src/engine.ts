@@ -25,4 +25,10 @@ export class Engine
 
         await this.config.save();
     }
+
+    public async setSecondsBetweenRounds (seconds: number): Promise<void>
+    {
+        this.config.secondsBetweenRounds = seconds;
+        await this.config.save();
+    }
 }
