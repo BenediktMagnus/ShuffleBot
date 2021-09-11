@@ -18,4 +18,11 @@ export class Engine
 
         await this.config.save();
     }
+
+    public async setSecondsPerRound (seconds: number): Promise<void>
+    {
+        this.config.secondsPerRound = seconds;
+
+        await this.config.save();
+    }
 }
