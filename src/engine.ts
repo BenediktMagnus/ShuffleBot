@@ -39,4 +39,11 @@ export class Engine
 
         await this.config.save();
     }
+
+    public async setMeetingRoomName (name: string): Promise<void>
+    {
+        this.config.meetingRoomName = name;
+
+        await this.config.save();
+    }
 }
