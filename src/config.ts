@@ -97,4 +97,33 @@ export class Config
     }
 
     public reload = this.load.bind(this);
+
+    public async saveAs (filePath: string): Promise<void>
+    {
+        const configJson: Required<ConfigJson> = {
+            name: this.name,
+            clientId: this.clientId,
+            token: this.token,
+            controlGroupId: this.controlGroupId,
+            lobbyChannelId: this.lobbyChannelId,
+            secondsPerRound: this.secondsPerRound,
+            secondsBetweenRounds: this.secondsBetweenRounds,
+            peoplePerRoom: this.peoplePerRoom,
+            meetingRoomName: this.meetingRoomName,
+        };
+
+        const content = JSON.stringify(configJson, null, 4);
+
+        await fs.writeFile(filePath, content, 'utf8');
+    }
+
+    public async save (): Promise<void>
+    {
+        if (this.filePath === null)
+        {
+            throw new Error('The config must be loaded before it can be saved.');
+        }
+
+        await this.saveAs(this.filePath);
+    }
 }
