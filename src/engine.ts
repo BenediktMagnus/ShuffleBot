@@ -1,5 +1,14 @@
 import { Config } from "./config";
 
+interface RoundParameters
+{
+    lobbyChannelId: string|null;
+    meetingRoomName: string;
+    secondsPerRound: number;
+    secondsBetweenRounds: number;
+    peoplePerRoom: number;
+}
+
 /**
  * The engine of the bot contains the main logic and handles the commands.
  */
@@ -45,5 +54,16 @@ export class Engine
         this.config.meetingRoomName = name;
 
         await this.config.save();
+    }
+
+    public getRoundParameters (): RoundParameters
+    {
+        return {
+            lobbyChannelId: this.config.lobbyChannelId,
+            meetingRoomName: this.config.meetingRoomName,
+            secondsPerRound: this.config.secondsPerRound,
+            secondsBetweenRounds: this.config.secondsBetweenRounds,
+            peoplePerRoom: this.config.peoplePerRoom,
+        };
     }
 }
