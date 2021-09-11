@@ -1,9 +1,18 @@
 import * as Discord from 'discord.js';
+import { Engine } from '../engine';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-export interface Command
+export abstract class Command
 {
-    data: SlashCommandBuilder;
+    protected readonly engine: Engine;
+    public readonly data: SlashCommandBuilder;
 
-    execute (interaction: Discord.CommandInteraction): Promise<void>;
+    constructor (engine: Engine)
+    {
+        this.engine = engine;
+
+        this.data = new SlashCommandBuilder();
+    }
+
+    public abstract execute (interaction: Discord.CommandInteraction): Promise<void>;
 }

@@ -5,18 +5,22 @@ import type { CommandConstructor } from './types/commandConstructor';
 import { Config } from './config';
 import { REST as DiscordRestApi } from '@discordjs/rest';
 import { Routes as DiscordRoutes } from 'discord-api-types/v9';
+import { Engine } from './engine';
 import { promises as fs } from 'fs';
 import type { ModuleWithDefaultExport } from './types/moduleWithDefaultExport';
 
 export class ShuffleBot
 {
     private config: Config;
+    private engine: Engine;
+
     private discordClient: Discord.Client;
     private commands: Discord.Collection<string, Command>;
 
-    constructor (config: Config)
+    constructor (config: Config, engine: Engine)
     {
         this.config = config;
+        this.engine = engine;
 
         this.discordClient = new Discord.Client(
             {
@@ -72,7 +76,7 @@ export class ShuffleBot
 
             const commandClass = commandModule.default as CommandConstructor;
 
-            const command = new commandClass();
+            const command = new commandClass(this.engine);
 
             this.commands.set(command.data.name, command);
         }
