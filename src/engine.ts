@@ -11,4 +11,11 @@ export class Engine
     {
         this.config = config;
     }
+
+    public async setLobbyChannelId (channelId: string): Promise<void>
+    {
+        this.config.lobbyChannelId = channelId;
+
+        await this.config.save();
+    }
 }
