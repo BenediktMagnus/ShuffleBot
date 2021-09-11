@@ -29,6 +29,14 @@ export class Engine
     public async setSecondsBetweenRounds (seconds: number): Promise<void>
     {
         this.config.secondsBetweenRounds = seconds;
+
+        await this.config.save();
+    }
+
+    public async setPeoplePerRoom (count: number): Promise<void>
+    {
+        this.config.peoplePerRoom = count;
+
         await this.config.save();
     }
 }
