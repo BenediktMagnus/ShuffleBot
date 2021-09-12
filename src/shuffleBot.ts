@@ -25,7 +25,8 @@ export class ShuffleBot
         const intents = new Discord.Intents();
         intents.add(
             Discord.Intents.FLAGS.GUILDS,
-            Discord.Intents.FLAGS.GUILD_MESSAGES
+            Discord.Intents.FLAGS.GUILD_MESSAGES,
+            Discord.Intents.FLAGS.GUILD_VOICE_STATES,
         );
 
         this.discordClient = new Discord.Client(
