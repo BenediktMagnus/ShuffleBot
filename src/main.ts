@@ -1,5 +1,4 @@
 import { Config } from "./config";
-import { Engine } from "./engine";
 import { ShuffleBot } from "./shuffleBot";
 
 const configFilePath = './data/config.json';
@@ -50,9 +49,7 @@ class Main
         const config = new Config();
         await config.load(configFilePath);
 
-        const engine = new Engine(config);
-
-        this.shuffleBot = new ShuffleBot(config, engine);
+        this.shuffleBot = new ShuffleBot(config);
 
         const loginName = await this.shuffleBot.run();
 

@@ -17,10 +17,9 @@ export class ShuffleBot
     private discordClient: Discord.Client;
     private commands: Discord.Collection<string, Command>;
 
-    constructor (config: Config, engine: Engine)
+    constructor (config: Config)
     {
         this.config = config;
-        this.engine = engine;
 
         const intents = new Discord.Intents();
         intents.add(
@@ -43,6 +42,8 @@ export class ShuffleBot
         );
 
         this.discordClient.on('interactionCreate', this.onInteraction.bind(this));
+
+        this.engine = new Engine(config);
 
         this.commands = new Discord.Collection();
     }
