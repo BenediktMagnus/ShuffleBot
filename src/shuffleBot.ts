@@ -43,7 +43,7 @@ export class ShuffleBot
 
         this.discordClient.on('interactionCreate', this.onInteraction.bind(this));
 
-        this.engine = new Engine(config);
+        this.engine = new Engine(config, this.discordClient);
 
         this.commands = new Discord.Collection();
     }
