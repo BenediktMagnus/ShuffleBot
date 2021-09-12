@@ -22,9 +22,15 @@ export class ShuffleBot
         this.config = config;
         this.engine = engine;
 
+        const intents = new Discord.Intents();
+        intents.add(
+            Discord.Intents.FLAGS.GUILDS,
+            Discord.Intents.FLAGS.GUILD_MESSAGES
+        );
+
         this.discordClient = new Discord.Client(
             {
-                intents: [Discord.Intents.FLAGS.GUILDS && Discord.Intents.FLAGS.GUILD_MESSAGES]
+                intents: intents
             }
         );
 
