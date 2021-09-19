@@ -45,15 +45,14 @@ export default class StartCommand extends Command
 
         const sendFromChannelId = interaction.channelId;
 
-        this.engine.start(sendFromChannelId, startInSeconds);
-
         await interaction.editReply(
-            `The shuffling will start in ${startInSeconds} seconds!` + '\n' +
             `Lobby channel is <#${roundParameters.lobbyChannelId}>.` + '\n' +
             `Meeting room name is "${roundParameters.meetingRoomName}".` + '\n' +
             `Seconds per round is ${roundParameters.secondsPerRound}.` + '\n' +
             `Seconds between rounds is ${roundParameters.secondsBetweenRounds}.` + '\n' +
             `People per room is ${roundParameters.peoplePerRoom}.`
         );
+
+        await this.engine.start(sendFromChannelId, startInSeconds);
     }
 }

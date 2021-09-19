@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Timer from 'timers/promises';
 import { Config } from './config';
 
 interface RoundParameters
@@ -11,6 +10,12 @@ interface RoundParameters
     peoplePerRoom: number;
 }
 
+interface Channels
+{
+    lobby: Discord.VoiceChannel;
+    info: Discord.TextChannel;
+}
+
 /**
  * The engine of the bot contains the main logic and handles the commands.
  */
@@ -19,18 +24,28 @@ export class Engine
     private config: Config;
     private discordClient: Discord.Client;
 
+    /** The info channel is the channel where all information will be messaged to;
+     *  is set to the channel where the start command came from. */
+    private infoChannelId: string|null;
+
+    /** True while the bot shall run. Will be set to false when it shall end. */
+    private continueRunning: boolean;
+
     private meatingRoomIds: string[];
 
-    private timers: Set<NodeJS.Timer>;
+    private queuedEvents: Set<NodeJS.Timer>;
 
     constructor (config: Config, discordClient: Discord.Client)
     {
         this.config = config;
         this.discordClient = discordClient;
 
+        this.infoChannelId = null;
+        this.continueRunning = false;
+
         this.meatingRoomIds = [];
 
-        this.timers = new Set();
+        this.queuedEvents = new Set();
     }
 
     public async setLobbyChannelId (channelId: string): Promise<void>
@@ -83,94 +98,183 @@ export class Engine
      * Start the shuffle bot!
      * @param commandChannelId The channel where the start command came from.
      */
-    public start (commandChannelId: string, startInSeconds: number): void
+    public async start (commandChannelId: string, startInSeconds: number): Promise<void>
     {
-        const startTimer = setTimeout(
-            this.catchVoidPromise(
-                async () =>
+        this.infoChannelId = commandChannelId;
+
+        this.continueRunning = true;
+
+        await this.queueNextRound(startInSeconds);
+    }
+
+    private async queueNextRound (startInSeconds: number): Promise<void>
+    {
+        this.queueEvent(
+            async () =>
+            {
+                const channels = await this.tryGetChannels();
+
+                if (channels === null)
                 {
-                    const infoChannel = await this.discordClient.channels.fetch(commandChannelId) as Discord.TextChannel|null;
-
-                    if (infoChannel === null)
-                    {
-                        console.error('Could not find info channel.');
-
-                        return;
-                    }
-
-                    await infoChannel.send('The bot is now shuffling!');
-
-                    await this.shufflePeople();
-
-                    await Timer.setTimeout(5000);
-
-                    await this.returnToLobby();
+                    return;
                 }
-            ),
-            startInSeconds * 1000
+
+                await channels.info.send('The bot is now shuffling!');
+
+                const meetingRoomChannels = await this.createMeetingRooms(channels);
+                await this.shufflePeople(channels, meetingRoomChannels);
+
+                this.queueReminders();
+
+                this.queueFinaliser();
+            },
+            startInSeconds
         );
 
-        this.timers.add(startTimer);
-    }
+        const channels = await this.tryGetChannels();
 
-    private async shufflePeople (): Promise<void>
-    {
-        if (this.config.lobbyChannelId === null)
+        if (channels === null)
         {
-            console.error('No lobby channel set.');
             return;
         }
 
-        const lobbyChannel = await this.discordClient.channels.fetch(this.config.lobbyChannelId) as Discord.VoiceChannel|null;
-
-        if (lobbyChannel === null)
-        {
-            console.error('Could not find lobby channel.');
-            return;
-        }
-
-        const peopleCount = lobbyChannel.members.size;
-
-        console.log(peopleCount);
-
-        await this.createMeetingRooms(peopleCount, lobbyChannel);
+        await channels.info.send(`The shuffling will start in ${startInSeconds} seconds!`);
     }
 
-    private async createMeetingRooms (count: number, lobbyChannel: Discord.VoiceChannel): Promise<void>
+    private async shufflePeople (channels: Channels, meetingRoomChannels: Discord.VoiceChannel[]): Promise<void>
     {
-        for (let roomNumber = 1; roomNumber <= count; roomNumber++)
+        for (const meetingRoom of meetingRoomChannels)
         {
-            const channel = await lobbyChannel.guild.channels.create(
+            while ((meetingRoom.members.size < this.config.peoplePerRoom) && (channels.lobby.members.size > 0))
+            {
+                await channels.lobby.members.random()?.voice.setChannel(meetingRoom);
+            }
+        }
+    }
+
+    private async createMeetingRooms (channels: Channels): Promise<Discord.VoiceChannel[]>
+    {
+        const peopleCount = channels.lobby.members.size;
+        const roomCount = Math.ceil(peopleCount / this.config.peoplePerRoom);
+
+        const meetingRoomChannels: Discord.VoiceChannel[] = [];
+
+        for (let roomNumber = 1; roomNumber <= roomCount; roomNumber++)
+        {
+            const channel = await channels.lobby.guild.channels.create(
                 `${this.config.meetingRoomName} ${roomNumber}`,
                 {
                     type: 'GUILD_VOICE',
-                    parent: lobbyChannel.parent ?? undefined
+                    parent: channels.lobby.parent ?? undefined
                 }
             );
 
-            await channel.setUserLimit(count);
+            await channel.setUserLimit(this.config.peoplePerRoom);
+
+            meetingRoomChannels.push(channel);
 
             this.meatingRoomIds.push(channel.id);
-
-            await lobbyChannel.members.first()?.voice.setChannel(channel);
-
-            console.log(`Created meeting room ${roomNumber}`);
         }
+
+        return meetingRoomChannels;
+    }
+
+    /**
+     * Create events for the reminders of how many minutes left.
+     * There will be one reminder for one minute left and one for each five minutes (five, ten, fifteen...).
+     */
+    private queueReminders (): void
+    {
+        let oneMinuteReminderTime = this.config.secondsPerRound - 60;
+        if (oneMinuteReminderTime < 0)
+        {
+            oneMinuteReminderTime = 0;
+        }
+
+        this.queueEvent(
+            async () =>
+            {
+                const channels = await this.tryGetChannels();
+
+                if (channels === null)
+                {
+                    return;
+                }
+
+                if (oneMinuteReminderTime > 0)
+                {
+                    await channels.info.send('1 minute left!');
+                }
+                else
+                {
+                    await channels.info.send(`${this.config.secondsPerRound} seconds left!`);
+                }
+            },
+            oneMinuteReminderTime
+        );
+
+        let remainingTime = this.config.secondsPerRound;
+        let counter = 1;
+        while (remainingTime > 5 * 60)
+        {
+            remainingTime -= 5 * 60;
+            const minutesLeft = counter * 5;
+
+            this.queueEvent(
+                async () =>
+                {
+                    const channels = await this.tryGetChannels();
+
+                    if (channels === null)
+                    {
+                        return;
+                    }
+
+                    await channels.info.send(`${minutesLeft} minutes left.`);
+                },
+                remainingTime
+            );
+
+            counter += 1;
+        }
+    }
+
+    /**
+     * Create an event to return all members back to the lobby and delete the meeting rooms.
+     * If continueRunning is true, an event to start the next round will be created.
+     */
+    private queueFinaliser (): void
+    {
+        this.queueEvent(
+            async () =>
+            {
+                const channels = await this.tryGetChannels();
+
+                if (channels === null)
+                {
+                    return;
+                }
+
+                await channels.info.send('Returning to lobby.');
+
+                await this.returnToLobby();
+                await this.deleteMeetingRooms();
+
+                if (this.continueRunning)
+                {
+                    await this.queueNextRound(this.config.secondsBetweenRounds);
+                }
+            },
+            this.config.secondsPerRound
+        );
     }
 
     private async returnToLobby (): Promise<void>
     {
-        if (this.config.lobbyChannelId === null)
-        {
-            console.error('No lobby channel set.');
-            return;
-        }
+        const channels = await this.tryGetChannels();
 
-        const lobbyChannel = await this.discordClient.channels.fetch(this.config.lobbyChannelId) as Discord.VoiceChannel|null;
-
-        if (lobbyChannel === null)
+        if (channels === null)
         {
-            console.error('Could not find lobby channel.');
             return;
         }
 
@@ -185,11 +289,9 @@ export class Engine
 
             for (const member of meetingRoomChannel.members.values())
             {
-                await member.voice.setChannel(lobbyChannel);
+                await member.voice.setChannel(channels.lobby);
             }
         }
-
-        await this.deleteMeetingRooms();
     }
 
     private async deleteMeetingRooms (): Promise<void>
@@ -207,6 +309,93 @@ export class Engine
         }
 
         this.meatingRoomIds = [];
+    }
+
+    /**
+     * End the shuffling after the current round.
+     */
+    public end (): void
+    {
+        this.continueRunning = false;
+    }
+
+    /**
+     * Cancel the shuffling, including any ongoing round.
+     */
+    public cancel (): void
+    {
+        this.cancelAllEvents();
+
+        this.continueRunning = false;
+    }
+
+    /**
+     * Try to get the channels.
+     * If one of them is not found, return null and cancel all ongoing events.
+     */
+    private async tryGetChannels (): Promise<Channels|null>
+    {
+        //TODO: Canceling all events is unexpected. Either remove that or rename the function to represent what it does.
+
+        if ((this.config.lobbyChannelId === null) || (this.infoChannelId === null))
+        {
+            console.error('No lobby or info channel set.');
+
+            this.cancelAllEvents();
+
+            return null;
+        }
+
+        const lobbyChannel = await this.discordClient.channels.fetch(this.config.lobbyChannelId) as Discord.VoiceChannel|null;
+        const infoChannel = await this.discordClient.channels.fetch(this.infoChannelId) as Discord.TextChannel|null;
+
+        if ((lobbyChannel === null) || (infoChannel === null))
+        {
+            console.error('Could not find lobby or info channel.');
+
+            this.cancelAllEvents();
+
+            return null;
+        }
+
+        return {
+            lobby: lobbyChannel,
+            info: infoChannel,
+        };
+    }
+
+    /**
+     * Add a timed event to the list of queued events.
+     * Can later be cancelled.
+     * @param callback The function to run.
+     * @param startInSeconds The time to start the event in seconds from now.
+    */
+    private queueEvent (asyncCallback: (...args: any[]) => Promise<void>, startInSeconds: number): void
+    {
+        const syncedCallback = this.catchVoidPromise(asyncCallback);
+
+        const timeout = setTimeout(
+            () =>
+            {
+                syncedCallback();
+
+                this.queuedEvents.delete(timeout);
+            },
+            startInSeconds * 1000
+        );
+
+        this.queuedEvents.add(timeout);
+    }
+
+    /**
+     * Cancell all ongoing events.
+     */
+    private cancelAllEvents (): void
+    {
+        for (const timer of this.queuedEvents)
+        {
+            clearTimeout(timer);
+        }
     }
 
     private catchVoidPromise (promiseReturner: (...args: any[]) => Promise<void>): (...args: any[]) => void
