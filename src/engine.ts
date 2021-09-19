@@ -264,6 +264,10 @@ export class Engine
                 {
                     await this.queueNextRound(this.config.secondsBetweenRounds);
                 }
+                else
+                {
+                    await channels.info.send('The shuffling ended.');
+                }
             },
             this.config.secondsPerRound
         );
