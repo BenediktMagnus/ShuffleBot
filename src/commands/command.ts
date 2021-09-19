@@ -12,6 +12,7 @@ export abstract class Command
         this.engine = engine;
 
         this.data = new SlashCommandBuilder();
+        this.data.setDefaultPermission(false);
     }
 
     public abstract execute (interaction: Discord.CommandInteraction): Promise<void>;

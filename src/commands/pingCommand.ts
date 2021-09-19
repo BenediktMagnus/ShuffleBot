@@ -10,7 +10,6 @@ export default class PingCommand extends Command
 
         this.data.setName('ping');
         this.data.setDescription('Replies with Pong!');
-        this.data.setDefaultPermission(false);
     }
 
     public override async execute (interaction: Discord.CommandInteraction): Promise<void>

@@ -13,7 +13,6 @@ export default class EndCommand extends Command
 
         this.data.setName('end');
         this.data.setDescription('End the shuffling.');
-        this.data.setDefaultPermission(false);
 
         const immediatelyOption = new SlashCommandBooleanOption();
         immediatelyOption.setName(this.immediatelyOptionName);

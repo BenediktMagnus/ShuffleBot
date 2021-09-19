@@ -10,7 +10,6 @@ export default class ShowParametersCommand extends Command
 
         this.data.setName('showparameters');
         this.data.setDescription('Show the current parameters.');
-        this.data.setDefaultPermission(false);
     }
 
     public async execute (interaction: Discord.CommandInteraction): Promise<void>

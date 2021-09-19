@@ -13,7 +13,6 @@ export default class SetSecondsBetweenRoundsCommand extends Command
 
         this.data.setName('setsecondsbetweenrounds');
         this.data.setDescription('Specify the amount of seconds between two rounds.');
-        this.data.setDefaultPermission(false);
 
         const secondsOption = new SlashCommandNumberOption();
         secondsOption.setName(this.secondsOptionName);

@@ -13,7 +13,6 @@ export default class StartCommand extends Command
 
         this.data.setName('start');
         this.data.setDescription('Start the shuffling!');
-        this.data.setDefaultPermission(false);
 
         const startInSecondsOption = new SlashCommandNumberOption();
         startInSecondsOption.setName(this.startInSecondsOptionName);

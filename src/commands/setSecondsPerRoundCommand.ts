@@ -13,7 +13,6 @@ export default class SetSecondsPerRoundCommand extends Command
 
         this.data.setName('setsecondsperround');
         this.data.setDescription('Specify the amount of seconds a round will last.');
-        this.data.setDefaultPermission(false);
 
         const secondsOption = new SlashCommandNumberOption();
         secondsOption.setName(this.secondsOptionName);

@@ -13,7 +13,6 @@ export default class SetLobbyChannelCommand extends Command
 
         this.data.setName('setlobbychannel');
         this.data.setDescription('Specify the voice channel that shall be used as the lobby.');
-        this.data.setDefaultPermission(false);
 
         const lobbyChannelOption = new SlashCommandChannelOption();
         lobbyChannelOption.setName(this.lobbyChannelOptionName);

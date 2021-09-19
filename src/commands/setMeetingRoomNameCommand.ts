@@ -13,7 +13,6 @@ export default class SetMeetingRoomNameCommand extends Command
 
         this.data.setName('setmeetingroomname');
         this.data.setDescription('Specify the name of the meeting rooms. This will be postfixed with the room number.');
-        this.data.setDefaultPermission(false);
 
         const nameOption = new SlashCommandStringOption();
         nameOption.setName(this.nameOptionName);

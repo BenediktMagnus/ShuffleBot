@@ -13,7 +13,6 @@ export default class SetPeoplePerRoomCommand extends Command
 
         this.data.setName('setpeopleperroom');
         this.data.setDescription('Specify the people count per room.');
-        this.data.setDefaultPermission(false);
 
         const countOption = new SlashCommandNumberOption();
         countOption.setName(this.countOptionName);
