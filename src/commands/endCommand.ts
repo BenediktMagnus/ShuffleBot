@@ -32,7 +32,7 @@ export default class EndCommand extends Command
         {
             this.engine.end();
 
-            await interaction.editReply('This will be last round of shuffling.');
+            await interaction.editReply('This will be the last round of shuffling.');
         }
         else
         {
