@@ -36,12 +36,12 @@ export default class SetSecondsBetweenRoundsCommand extends Command
 
         if (seconds < 1)
         {
-            await interaction.editReply('The amount of seconds between two rounds must be greater than zero.');
+            await interaction.editReply('The time between two rounds must be greater than zero.');
             return;
         }
 
         await this.engine.setSecondsBetweenRounds(seconds);
 
-        await interaction.editReply(`The amount of seconds between two rounds has been set to ${seconds} seconds.`);
+        await interaction.editReply(`The time between two rounds has been set to ${seconds} seconds.`);
     }
 }

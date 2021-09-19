@@ -36,12 +36,12 @@ export default class SetSecondsPerRoundCommand extends Command
 
         if (seconds < 1)
         {
-            await interaction.editReply('The amount of seconds a round will last must be greater than zero.');
+            await interaction.editReply('The time a round will last must be greater than zero.');
             return;
         }
 
         await this.engine.setSecondsPerRound(seconds);
 
-        await interaction.editReply(`The amount of seconds a round will last has been set to ${seconds} seconds.`);
+        await interaction.editReply(`The time a round will last has been set to ${seconds} seconds.`);
     }
 }
