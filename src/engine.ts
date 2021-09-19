@@ -322,11 +322,14 @@ export class Engine
     /**
      * Cancel the shuffling, including any ongoing round.
      */
-    public cancel (): void
+    public async cancel (): Promise<void>
     {
+        this.continueRunning = false;
+
         this.cancelAllEvents();
 
-        this.continueRunning = false;
+        await this.returnToLobby();
+        await this.deleteMeetingRooms();
     }
 
     /**
