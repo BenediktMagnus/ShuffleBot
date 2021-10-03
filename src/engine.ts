@@ -171,6 +171,7 @@ export class Engine
     private async createMeetingRooms (channels: Channels): Promise<Discord.VoiceChannel[]>
     {
         const peopleCount = channels.lobby.members.size;
+        // TODO: Check for too few members left.
         const roomCount = Math.ceil(peopleCount / this.config.peoplePerRoom);
 
         const meetingRoomChannels: Discord.VoiceChannel[] = [];
@@ -309,6 +310,8 @@ export class Engine
 
             for (const member of meetingRoomChannel.members.values())
             {
+                // TODO: Check for too few members left.
+
                 await member.voice.setChannel(channels.lobby);
             }
         }
