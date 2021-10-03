@@ -146,10 +146,21 @@ export class Engine
         const peopleCount = channels.lobby.members.size;
         const roomCount = meetingRoomChannels.length;
 
-        for (const meetingRoom of meetingRoomChannels)
+        /* TODO: The following could perhabs be faster by getting the list of all members in the lobby beforehand and distributing them
+           in parallel (without await) to the meeting rooms, then afterwards wait for all setChannel promises to finish.
+           It should be tested if this is indeed faster (it could not if the Discord API bottlenecked) and is as reliable as the current
+           solution. One would have to check for members leaving the lobby in the meantime, references becoming invalid and possible
+           reliability issues with the API, possibly more. */
+
+        while (channels.lobby.members.size > 0)
         {
-            while ((meetingRoom.members.size < this.config.peoplePerRoom) && (channels.lobby.members.size > 0))
+            for (const meetingRoom of meetingRoomChannels)
             {
+                if ((meetingRoom.members.size >= this.config.peoplePerRoom) || (channels.lobby.members.size <= 0))
+                {
+                    break;
+                }
+
                 await channels.lobby.members.random()?.voice.setChannel(meetingRoom);
             }
         }
