@@ -143,6 +143,9 @@ export class Engine
 
     private async shufflePeople (channels: Channels, meetingRoomChannels: Discord.VoiceChannel[]): Promise<void>
     {
+        const peopleCount = channels.lobby.members.size;
+        const roomCount = meetingRoomChannels.length;
+
         for (const meetingRoom of meetingRoomChannels)
         {
             while ((meetingRoom.members.size < this.config.peoplePerRoom) && (channels.lobby.members.size > 0))
@@ -150,6 +153,8 @@ export class Engine
                 await channels.lobby.members.random()?.voice.setChannel(meetingRoom);
             }
         }
+
+        await channels.info.send(`The bot has shuffled ${peopleCount} people into ${roomCount} rooms.`);
     }
 
     private async createMeetingRooms (channels: Channels): Promise<Discord.VoiceChannel[]>
