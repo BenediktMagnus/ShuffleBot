@@ -40,7 +40,7 @@
         "clean": "rm -rf bin && rm -rf coverage",
         "lint": "npx eslint \"src/**/*.ts\"",
         "prepack": "npm run clean && npx tsc -p tsconfig.release.json",
-        "start": "node bin/main.js",
+        "start": "node bin/main.js"
     },
     "private": true
 }
