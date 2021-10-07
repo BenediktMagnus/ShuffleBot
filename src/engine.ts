@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
 import { Config } from './config';
 
+// TODO: It should be checked if actions in Discord are successful or fail because of (internal) errors. Is there a global error handler?
+
 interface RoundParameters
 {
     lobbyChannelId: string|null;
