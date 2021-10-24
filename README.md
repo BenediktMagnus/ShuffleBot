@@ -24,7 +24,7 @@ The Hamburger Indie Treff (German for meetup) is the regular meetup for Hamburg 
   - Copy and open the URL that showed up below.
   - Choose your server in the list.
   - Click on "Authorise".
-  - Give the bot the "Manage channels" and the "Move members" permissions.
+  - Give the bot the "Manage channels", "Manage roles" and "Move members" permissions.
 ## Configure your server
   - Any role can be the bot control role (every member of the role will be allowed to use the bot's commands).
   - Any channel can be the info channel (where all info is written to).

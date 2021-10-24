@@ -189,6 +189,8 @@ export class Engine
             );
 
             await channel.setUserLimit(this.config.peoplePerRoom);
+            // Set the same permissions for the channel as for the lobby:
+            await channel.permissionOverwrites.set(channels.lobby.permissionOverwrites.cache);
 
             meetingRoomChannels.push(channel);
 
