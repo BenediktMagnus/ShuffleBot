@@ -12,7 +12,7 @@ export default class ShowParametersCommand extends Command
         this.data.setDescription('Show the current parameters.');
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 

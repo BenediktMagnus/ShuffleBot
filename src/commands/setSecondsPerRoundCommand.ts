@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { Command } from './command';
 import { Engine } from '../engine';
-import { SlashCommandNumberOption } from '@discordjs/builders';
 
 export default class SetSecondsPerRoundCommand extends Command
 {
@@ -14,14 +13,14 @@ export default class SetSecondsPerRoundCommand extends Command
         this.data.setName('setsecondsperround');
         this.data.setDescription('Specify the amount of seconds a round will last.');
 
-        const secondsOption = new SlashCommandNumberOption();
+        const secondsOption = new Discord.SlashCommandNumberOption();
         secondsOption.setName(this.secondsOptionName);
         secondsOption.setDescription('The amount of seconds a round will last.');
         secondsOption.setRequired(true);
         this.data.addNumberOption(secondsOption);
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 

@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { Command } from './command';
 import { Engine } from '../engine';
-import { SlashCommandNumberOption } from '@discordjs/builders';
 
 export default class SetPeoplePerRoomCommand extends Command
 {
@@ -14,14 +13,14 @@ export default class SetPeoplePerRoomCommand extends Command
         this.data.setName('setpeopleperroom');
         this.data.setDescription('Specify the people count per room.');
 
-        const countOption = new SlashCommandNumberOption();
+        const countOption = new Discord.SlashCommandNumberOption();
         countOption.setName(this.countOptionName);
         countOption.setDescription('The number of people per room.');
         countOption.setRequired(true);
         this.data.addNumberOption(countOption);
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 

@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { Command } from './command';
 import { Engine } from '../engine';
-import { SlashCommandStringOption } from '@discordjs/builders';
 
 export default class SetMeetingRoomNameCommand extends Command
 {
@@ -14,14 +13,14 @@ export default class SetMeetingRoomNameCommand extends Command
         this.data.setName('setmeetingroomname');
         this.data.setDescription('Specify the name of the meeting rooms. This will be postfixed with the room number.');
 
-        const nameOption = new SlashCommandStringOption();
+        const nameOption = new Discord.SlashCommandStringOption();
         nameOption.setName(this.nameOptionName);
         nameOption.setDescription('The room name.');
         nameOption.setRequired(true);
         this.data.addStringOption(nameOption);
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 

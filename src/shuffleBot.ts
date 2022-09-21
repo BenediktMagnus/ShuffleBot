@@ -3,7 +3,6 @@ import * as Path from 'path';
 import { Command } from './commands/command';
 import type { CommandConstructor } from './types/commandConstructor';
 import { Config } from './config';
-import { REST as DiscordRestApi } from '@discordjs/rest';
 import { Routes as DiscordRoutes } from 'discord-api-types/v9';
 import { Engine } from './engine';
 import { promises as fs } from 'fs';
@@ -21,16 +20,13 @@ export class ShuffleBot
     {
         this.config = config;
 
-        const intents = new Discord.Intents();
-        intents.add(
-            Discord.Intents.FLAGS.GUILDS,
-            Discord.Intents.FLAGS.GUILD_MESSAGES,
-            Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-        );
-
         this.discordClient = new Discord.Client(
             {
-                intents: intents
+                intents: [
+                    Discord.GatewayIntentBits.Guilds,
+                    Discord.GatewayIntentBits.GuildMessages,
+                    Discord.GatewayIntentBits.GuildVoiceStates,
+                ]
             }
         );
 
@@ -95,13 +91,7 @@ export class ShuffleBot
      */
     private async registerCommands (): Promise<void>
     {
-        const discordRestApi = new DiscordRestApi(
-            {
-                version: '9'
-            }
-        );
-
-        discordRestApi.setToken(this.config.token);
+        this.discordClient.rest.setToken(this.config.token);
 
         const guilds = this.discordClient.guilds.cache.values();
 
@@ -111,7 +101,7 @@ export class ShuffleBot
         // This prevents the one hour cache restriction of the Discord API.
         for (const guild of guilds)
         {
-            await discordRestApi.put(
+            await this.discordClient.rest.put(
                 DiscordRoutes.applicationGuildCommands(
                     this.config.clientId, guild.id
                 ),

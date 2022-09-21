@@ -1,19 +1,18 @@
 import * as Discord from 'discord.js';
 import { Engine } from '../engine';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export abstract class Command
 {
     protected readonly engine: Engine;
-    public readonly data: SlashCommandBuilder;
+    public readonly data: Discord.SlashCommandBuilder;
 
     constructor (engine: Engine)
     {
         this.engine = engine;
 
-        this.data = new SlashCommandBuilder();
-        this.data.setDefaultPermission(false);
+        this.data = new Discord.SlashCommandBuilder();
+        this.data.setDefaultMemberPermissions(null);
     }
 
-    public abstract execute (interaction: Discord.CommandInteraction): Promise<void>;
+    public abstract execute (interaction: Discord.Interaction): Promise<void>;
 }

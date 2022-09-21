@@ -181,9 +181,9 @@ export class Engine
         for (let roomNumber = 1; roomNumber <= roomCount; roomNumber++)
         {
             const channel = await channels.lobby.guild.channels.create(
-                `${this.config.meetingRoomName} ${roomNumber}`,
                 {
-                    type: 'GUILD_VOICE',
+                    name: `${this.config.meetingRoomName} ${roomNumber}`,
+                    type: Discord.ChannelType.GuildVoice,
                     parent: channels.lobby.parent ?? undefined
                 }
             );

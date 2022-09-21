@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { Command } from './command';
 import { Engine } from '../engine';
-import { SlashCommandNumberOption } from '@discordjs/builders';
 
 export default class SetSecondsBetweenRoundsCommand extends Command
 {
@@ -14,14 +13,14 @@ export default class SetSecondsBetweenRoundsCommand extends Command
         this.data.setName('setsecondsbetweenrounds');
         this.data.setDescription('Specify the amount of seconds between two rounds.');
 
-        const secondsOption = new SlashCommandNumberOption();
+        const secondsOption = new Discord.SlashCommandNumberOption();
         secondsOption.setName(this.secondsOptionName);
         secondsOption.setDescription('The amount of seconds between two rounds.');
         secondsOption.setRequired(true);
         this.data.addNumberOption(secondsOption);
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 

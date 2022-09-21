@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { Command } from './command';
 import { Engine } from '../engine';
-import { SlashCommandNumberOption } from '@discordjs/builders';
 
 export default class StartCommand extends Command
 {
@@ -14,7 +13,7 @@ export default class StartCommand extends Command
         this.data.setName('start');
         this.data.setDescription('Start the shuffling!');
 
-        const startInSecondsOption = new SlashCommandNumberOption();
+        const startInSecondsOption = new Discord.SlashCommandNumberOption();
         startInSecondsOption.setName(this.startInSecondsOptionName);
         startInSecondsOption.setDescription(
             'Seconds to wait until starting. Defaults to the time between rounds.'
@@ -23,7 +22,7 @@ export default class StartCommand extends Command
         this.data.addNumberOption(startInSecondsOption);
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 

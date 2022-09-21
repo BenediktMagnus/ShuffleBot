@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { Command } from './command';
 import { Engine } from '../engine';
-import { SlashCommandBooleanOption } from '@discordjs/builders';
 
 export default class EndCommand extends Command
 {
@@ -14,14 +13,14 @@ export default class EndCommand extends Command
         this.data.setName('end');
         this.data.setDescription('End the shuffling.');
 
-        const immediatelyOption = new SlashCommandBooleanOption();
+        const immediatelyOption = new Discord.SlashCommandBooleanOption();
         immediatelyOption.setName(this.immediatelyOptionName);
         immediatelyOption.setDescription('If true, end the shuffling immediately.');
         immediatelyOption.setRequired(false);
         this.data.addBooleanOption(immediatelyOption);
     }
 
-    public async execute (interaction: Discord.CommandInteraction): Promise<void>
+    public async execute (interaction: Discord.ChatInputCommandInteraction): Promise<void>
     {
         await interaction.deferReply();
 
