@@ -111,7 +111,7 @@ export class ShuffleBot
         // This prevents the one hour cache restriction of the Discord API.
         for (const guild of guilds)
         {
-            const result = await discordRestApi.put(
+            await discordRestApi.put(
                 DiscordRoutes.applicationGuildCommands(
                     this.config.clientId, guild.id
                 ),
@@ -119,26 +119,6 @@ export class ShuffleBot
                     body: commandsAsJsonArray
                 }
             ) as { id: Discord.Snowflake}[];
-
-            // Set permissions (only control group has access) for all commands:
-            for (const resultEntry of result)
-            {
-                const commandId = resultEntry.id;
-
-                const command = await guild.commands.fetch(commandId);
-
-                await command.permissions.add(
-                    {
-                        permissions: [
-                            {
-                                id: this.config.controlGroupId,
-                                type: 'ROLE',
-                                permission: true,
-                            }
-                        ]
-                    }
-                );
-            }
         }
     }
 

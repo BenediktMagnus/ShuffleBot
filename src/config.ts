@@ -5,7 +5,6 @@ interface ConfigJson
     name?: string;
     clientId?: string;
     token?: string;
-    controlGroupId?: string;
     lobbyChannelId?: string|null;
     secondsPerRound?: number;
     secondsBetweenRounds?: number;
@@ -19,8 +18,6 @@ export class Config
     public name: string;
     public clientId: string;
     public token: string;
-    /** The ID of the group that is allowed to control the bot (can use commands). */
-    public controlGroupId: string;
     /** The ID of the channel used as lobby; that is where everyone starts that will be distributed to the meeting rooms. */
     public lobbyChannelId: string|null;
     public secondsPerRound: number;
@@ -35,7 +32,6 @@ export class Config
         this.name = '';
         this.clientId = '';
         this.token = '';
-        this.controlGroupId = '';
         this.lobbyChannelId = null;
         this.secondsPerRound = 300;
         this.secondsBetweenRounds = 60;
@@ -63,15 +59,10 @@ export class Config
         {
             throw new Error('Config file is missing the token field.');
         }
-        if (configJson.controlGroupId === undefined)
-        {
-            throw new Error('Config file is missing the controlGroupId field.');
-        }
 
         this.name = configJson.name;
         this.clientId = configJson.clientId;
         this.token = configJson.token;
-        this.controlGroupId = configJson.controlGroupId;
 
         this.lobbyChannelId = configJson.lobbyChannelId ?? null;
 
@@ -104,7 +95,6 @@ export class Config
             name: this.name,
             clientId: this.clientId,
             token: this.token,
-            controlGroupId: this.controlGroupId,
             lobbyChannelId: this.lobbyChannelId,
             secondsPerRound: this.secondsPerRound,
             secondsBetweenRounds: this.secondsBetweenRounds,
