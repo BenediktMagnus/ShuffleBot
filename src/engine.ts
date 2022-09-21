@@ -430,7 +430,7 @@ export class Engine
 
     private catchVoidPromise (promiseReturner: (...args: any[]) => Promise<void>): (...args: any[]) => void
     {
-        const arrowFunction = (...args: any[]): void =>
+        const arrowFunction = (...args: unknown[]): void =>
         {
             promiseReturner(...args).catch(
                 (error) =>
