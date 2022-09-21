@@ -26,15 +26,13 @@ The Hamburger Indie Treff (German for meetup) is the regular meetup for Hamburg 
   - Click on "Authorise".
   - Give the bot the "Manage channels", "Manage roles" and "Move members" permissions.
 ## Configure your server
-  - Any role can be the bot control role (every member of the role will be allowed to use the bot's commands).
   - Any channel can be the info channel (where all info is written to).
     - Your bot needs write access there.
-    - The bot control role needs write access there.
-    - The bot control role must be allowed to use bot commands there.
+    - Everyone who will control the bot needs write access there.
+    - Everyone who will control the bot must be allowed to use bot commands there.
   - Any voice channel can be the lobby (where the bot gets the people from to distribute to the meeting rooms).
   - In your Discord, activate the developer mode via:
     - User settings -> Advanced -> Developer mode
-  - Click on any user in the bot control role, right click on the role and then on "Copy ID" to get the "controlGroupId".
   - Right click on the lobby channel and then on "Copy ID" to get the "lobbyChannelId".
 ## Install the bot
   - The bot is only tested on Linux (Ubuntu 21.04 and Debian 11). It may or may not work on other operating systems.
@@ -47,6 +45,11 @@ The Hamburger Indie Treff (German for meetup) is the regular meetup for Hamburg 
     - Set "token" to the bot's access token.
 ## Start the bot
   - Start via `npm start`.
+## Configure the bot usage permissions
+  - In your Discord server, find the bot's integration settings:
+    - Server settings -> Integrations -> Bots and Apps -> "Name of your bot"
+  - By default, nobody has access to the bot's commands (controlled by the "@everyone" group).
+  - Add rolls or users under "roles and members" and click on the green tick to give them access to the bot's commands.
 ## Use the bot:
   - First configuration:
     - `/setlobbychannel @lobby` to set the lobby channel.
