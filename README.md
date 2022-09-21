@@ -35,8 +35,8 @@ The Hamburger Indie Treff (German for meetup) is the regular meetup for Hamburg 
     - User settings -> Advanced -> Developer mode
   - Right click on the lobby channel and then on "Copy ID" to get the "lobbyChannelId".
 ## Install the bot
-  - The bot is only tested on Linux (Ubuntu 21.04 and Debian 11). It may or may not work on other operating systems.
-  - You need to have Node.JS (https://nodejs.org/) 16.0.0 or higher installed.
+  - The bot is only tested on Linux (Ubuntu 22.04 and Debian 11). It may or may not work on other operating systems.
+  - You need to have Node.JS (https://nodejs.org/) 16.9.0 or higher installed.
   - All dependencies are installed via `npm install` (NPM is shipped with Node.JS).
   - Minimal configuration:
     - Copy "data/config.json.default" to "data/config.json"
