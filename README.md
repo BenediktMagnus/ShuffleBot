@@ -63,3 +63,7 @@ The Hamburger Indie Treff (German for meetup) is the regular meetup for Hamburg 
     - `/start seconds` to start a round after the given amount of seconds. Will start immediately if no seconds are given.
   - End the shuffling:
     - `/end boolean` to end the shuffling. If given true, the bot will immediately return everyone to the lobby, if given false or nothing, the bot will start no new round after the current one but waits for it to finish.
+
+## How to update:
+  - Repeat the steps in and after "Install the bot".
+  - Instead of "Minimal configuration", copy the "data/config.json" from the old bot installation to the new one.
